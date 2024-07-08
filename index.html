@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Job Interview Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        #startButton {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        #interviewArea {
+            margin-top: 20px;
+            display: none;
+        }
+        #question, #response {
+            margin-bottom: 10px;
+        }
+        #responseInput {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        #submitResponse {
+            background-color: #008CBA;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Government Job Interview Simulator</h1>
+        <p>Click the button below to start a simulated government job interview.</p>
+        <button id="startButton">Start Interview</button>
+        <div id="interviewArea" style="display: none;">
+            <h2>Interview in Progress</h2>
+            <div id="progress"></div>
+            <div id="question"></div>
+            <textarea id="responseInput" rows="4" placeholder="Type your response here..."></textarea>
+            <button id="submitResponse">Submit Response</button>
+            <div id="response"></div>
+        </div>
+    </div>
+
+    <script src="interview.js"></script>
+    <script>
+         const startButton = document.getElementById('startButton');
+        const interviewArea = document.getElementById('interviewArea');
+        const questionElement = document.getElementById('question');
+        const responseInput = document.getElementById('responseInput');
+        const submitResponse = document.getElementById('submitResponse');
+        const responseElement = document.getElementById('response');
+        const progressElement = document.getElementById('progress');
+    
+        let interview;
+    
+        startButton.addEventListener('click', () => {
+            console.log("Start button clicked");
+            startButton.style.display = 'none';
+            interviewArea.style.display = 'block';
+            interview = new InterviewSimulator();
+            askQuestion(interview.startInterview());
+            updateProgress();
+        });
+    
+        submitResponse.addEventListener('click', () => {
+            console.log("Submit button clicked");
+            const response = responseInput.value;
+            if (response.trim() === '') {
+                alert('Please enter a response before submitting.');
+                return;
+            }
+            const feedback = interview.processResponse(response);
+            responseElement.textContent = "Interviewer: " + feedback;
+            responseInput.value = '';
+            setTimeout(() => {
+                askQuestion(interview.getNextQuestion());
+                updateProgress();
+            }, 2000);
+        });
+
+        function askQuestion(question) {
+            console.log("Asking question:", question);
+            questionElement.textContent = "Interviewer: " + question;
+        }
+
+        function updateProgress() {
+            progressElement.textContent = interview.getProgress();
+        }
+    </script>
+</body>
+</html>
